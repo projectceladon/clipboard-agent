@@ -50,7 +50,8 @@ cc_library_shared {
        "-Wno-unused-parameter",
        "-Wno-unused-label",
     ],
-    shared_libs: ["libbase", "liblog"],
+    shared_libs: ["liblog"],
+    static_libs: ["libbase_ndk"],
     sdk_version: "current",
 }
     
