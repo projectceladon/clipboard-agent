@@ -19,10 +19,8 @@ static const bool gServer = false;
 MsgDispatcher *MsgDispatcher::instance = nullptr;
 MsgDispatcher::MsgDispatcher() {
     std::vector<Component*> empty_vector;
-    fd_ = socket(AF_VSOCK, SOCK_STREAM, 0);
-    if (fd_ <= 0) {
-        ERR("Socket Create:");
-    }
+    fd_ = -1;
+    t_main_ = 0;
     nclients_ = 0;
     m_bStop = false;
     msg_type_map[MSG_TYPE_INVALID] = empty_vector;
@@ -35,6 +33,11 @@ bool MsgDispatcher::Start() {
     sock_addr.svm_port = VSOCK_PORT;
     sock_addr.svm_cid = VMADDR_CID_HOST;
 
+    fd_ = socket(AF_VSOCK, SOCK_STREAM, 0);
+    if (fd_ <= 0) {
+        ERR("Socket Create:");
+	return false;
+    }
     if (gServer) {
         int ret;
         if ((ret = bind(fd_, (struct sockaddr*)&sock_addr, sizeof(sock_addr))) < 0) {
@@ -189,6 +192,11 @@ void* MsgDispatcher::Run(void* arg) {
         //We may want to reconnect
         close(channel->fd_);
         dispatcher->fd_ = socket(AF_VSOCK, SOCK_STREAM, 0);
+	if (dispatcher->fd_ < 0) {
+            ERR(" socket failed");
+	    return (void*)-1;
+	}
+
         sleep(1);
         bool bConnected = true;
         struct sockaddr_vm sock_addr;
