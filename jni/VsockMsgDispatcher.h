@@ -78,7 +78,7 @@ struct Message {
 class MsgDispatcher;
 class Component {
     public:
-        Component () { m_bInitDone = false; }
+        Component () { m_bInitDone = false; dispatcher_ = nullptr;}
         MsgDispatcher* GetDispatcher() { return dispatcher_; }
         
         virtual ~Component() {}
@@ -122,6 +122,11 @@ class MsgDispatcher {
                     fd_ = fd;
                     id_ = id;
                 }
+		Channel(Channel &ch) {
+                    dispatcher_ = ch.dispatcher_;
+		    fd_ = ch.fd_;
+		    id_ = ch.id_;
+		}
 
                 ~Channel() {
                     close(fd_);
