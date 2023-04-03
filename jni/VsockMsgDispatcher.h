@@ -127,7 +127,9 @@ class MsgDispatcher {
 		    fd_ = ch.fd_;
 		    id_ = ch.id_;
 		}
-
+                Channel& operator=(const Channel& c) {
+		    return *this;
+	        }	    
                 ~Channel() {
                     close(fd_);
                     while(!msg_queue.empty()) {
