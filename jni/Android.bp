@@ -18,26 +18,6 @@
 // use by our example of how to bundle a shared library with an APK.
 
 cc_library_shared {
-    name: "libVsocketClientImpl",
-    // All of the source files that we will compile.
-    srcs: ["VsockClientImpl.cpp"],
-    // All of the shared libraries we link against.
-    // liblog is used to print trace log in C plus plus source code.
-    shared_libs: ["liblog"],
-    // No static libraries.
-    header_libs: ["jni_headers"],
-    static_libs: [],
-    cflags: [
-        "-Wall",
-        "-Werror",
-    ],
-    // We cannot use stl:"none" here to link libc++ dynamically because
-    // it caused "'iostream' file not found" build issue.
-    stl: "c++_static",
-    sdk_version: "current",
-}
-
-cc_library_shared {
     name: "libVsockMsgDispatch",
     srcs: [
         "VsockMsgDispatcher.cpp",
