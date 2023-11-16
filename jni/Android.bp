@@ -49,6 +49,7 @@ cc_library_shared {
        "-Werror",
        "-Wno-unused-parameter",
        "-Wno-unused-label",
+       "-fexceptions" 
     ],
     shared_libs: ["liblog"],
     static_libs: ["libbase_ndk"],
