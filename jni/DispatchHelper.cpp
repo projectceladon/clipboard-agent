@@ -2,6 +2,7 @@
 #include "DispatchHelper.h"
 #include <string.h>
 #include <jni.h>
+#include "android/log.h"
 
 using namespace vsock;
 std::map< std::string, std::vector<MSG_TYPE> > comp_msg_map {
@@ -66,12 +67,23 @@ class JavaComponent:public Component {
    private:
        jclass GetJClass() {
            std::map< std::string, jclass >::iterator it;
-           jclass reqClass = nullptr; 
-           it = jclass_map.find(java_class_name.c_str());
+           jclass reqClass = nullptr;
+       try
+       {
+          // Coverity fix: The following code may throw an exception of type std::length_error.
+          it = jclass_map.find(java_class_name.c_str());
            if (it != jclass_map.end()) {
                reqClass = it->second;
-           } 
-	   return reqClass;
+           }
+      }
+      catch (const std::exception& e)
+      {
+        // Coverity fix: GetJClass (typically used to report errors) may throw an
+        // exception of type std::length_error.
+        LOG(INFO) << "WARNING:GetJClass throw an exception" << e.what() << std::endl; 
+     }
+       return reqClass;
+             
        }
 
        jobject GetSingletonInstance(jclass reqClass) {
